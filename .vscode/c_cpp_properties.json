@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:/Software/msys64/mingw64/include/**",
+                "D:/Software/msys64/mingw64/include/SDL2"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.17763.0",
+            "compilerPath": "D:/Software/msys64/mingw64/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "windows-gcc-x64",
+            "compilerArgs": [
+                "-m64"
+            ]
+        }
+    ],
+    "version": 4
+}
