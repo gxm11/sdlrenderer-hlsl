@@ -1,55 +1,12 @@
 #include <cassert>
 #include <cstdint>
 
-// This has the full definition for SDL_Renderer, which allows us to reference
-// private fields inside it. Needs to be imported before SDL.h so we dont
-// redefine anything in there, which would break the build.
-#include <SDL_sysrender.h>
-
 // Well, if it's SDL + Direct3d HLSL we are going to need those
 #include <SDL.h>
 #include <d3d9.h>
 
 // This includes the binary for the compiled pixel shader.
 #include "fractal.h"
-
-// These are from SDL_render_d3d.c (inside SDL)
-// We need to copy them here because they are not included by the header files.
-typedef struct
-{
-  SDL_Rect viewport;
-  SDL_bool viewport_dirty;
-  SDL_Texture *texture;
-  SDL_BlendMode blend;
-  SDL_bool cliprect_enabled;
-  SDL_bool cliprect_enabled_dirty;
-  SDL_Rect cliprect;
-  SDL_bool cliprect_dirty;
-  SDL_bool is_copy_ex;
-  LPDIRECT3DPIXELSHADER9 shader;
-} D3D_DrawStateCache;
-
-typedef struct
-{
-  void *d3dDLL;
-  IDirect3D9 *d3d;
-  IDirect3DDevice9 *device;
-  UINT adapter;
-  D3DPRESENT_PARAMETERS pparams;
-  SDL_bool updateSize;
-  SDL_bool beginScene;
-  SDL_bool enableSeparateAlphaBlend;
-  D3DTEXTUREFILTERTYPE scaleMode[8];
-  IDirect3DSurface9 *defaultRenderTarget;
-  IDirect3DSurface9 *currentRenderTarget;
-  void *d3dxDLL;
-  LPDIRECT3DPIXELSHADER9 shaders[3];
-  LPDIRECT3DVERTEXBUFFER9 vertexBuffers[8];
-  size_t vertexBufferSize[8];
-  int currentVertexBuffer;
-  SDL_bool reportedVboProblem;
-  D3D_DrawStateCache drawstate;
-} D3D_RenderData;
 
 // Constants for the window
 const static char window_title[] = "SDL_Renderer + HLSL";
@@ -105,7 +62,7 @@ SDL_Renderer *direct3d9_renderer(SDL_Window *window)
 IDirect3DPixelShader9 *apply_hlsl_pixel_shader(SDL_Renderer *renderer, IDirect3DPixelShader9 *shader)
 {
   IDirect3DDevice9 *device = SDL_RenderGetD3D9Device(renderer);
-  // IDirect3DDevice9 *device = reinterpret_cast<D3D_RenderData *>(renderer->driverdata)->device;
+
   IDirect3DPixelShader9 *current_shader;
 
   assert(D3D_OK == IDirect3DDevice9_GetPixelShader(device, &current_shader));
@@ -121,10 +78,10 @@ IDirect3DPixelShader9 *apply_hlsl_pixel_shader(SDL_Renderer *renderer, IDirect3D
 IDirect3DPixelShader9 *hlsl_pixel_shader(SDL_Renderer *renderer)
 {
   IDirect3DDevice9 *device = SDL_RenderGetD3D9Device(renderer);
-  // IDirect3DDevice9 *device = reinterpret_cast<D3D_RenderData *>(renderer->driverdata)->device;
+
   IDirect3DPixelShader9 *shader;
   assert(D3D_OK == IDirect3DDevice9_CreatePixelShader(device, reinterpret_cast<const DWORD *>(g_ps21_main), &shader));
-  // assert(D3D_OK == IDirect3DDevice9_CreatePixelShader(device, g_ps21_main, &shader));
+
   return shader;
 }
 

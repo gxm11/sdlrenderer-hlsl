@@ -3,7 +3,7 @@ target = main.exe
 source = sdlrenderer-hlsl.cpp
 msys64 = D:/Software/msys64
 include = -I.
-include += -I./src/render
+# include += -I./src/render
 
 libs = -L${msys64}/mingw64/lib
 libs += -lstdc++
@@ -17,4 +17,4 @@ all: $(target)
 
 $(target) : $(source)
 	$(cc) $(include) $(source) -o $(target) $(cflags) -static $(libs)
-	upx --brute $(target)
+	# upx $(target)
